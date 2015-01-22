@@ -10,30 +10,20 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace HW3
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
         private string fileData = "tsp_DeutschlandCities.txt";
 
-        private Dictionary<string, string> coords;
+        private double[] xCoords;
+        private double[] yCoords;
 
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-            coords = new Dictionary<string, string>();
-
             getSentenceIndex();
         }
 
@@ -44,10 +34,20 @@ namespace HW3
 
             // read input and safe them as lower case words
             string veryLongString = reader.ReadToEnd().ToLower();
+            veryLongString = veryLongString.Replace('.', ',');
 
-            coords = veryLongString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
-               .Select(part => part.Split('\t'))
-               .ToDictionary(split => split[0], split => split[1]);
+            List<string[]> coordinates = veryLongString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(part => part.Split(' ')).ToList();
+            xCoords = new double[coordinates.Count()];
+            yCoords = new double[coordinates.Count()];
+
+            for (int i = 1; i < coordinates.Count(); i++)
+            {
+                xCoords[i] = Convert.ToDouble(coordinates[i][1]);
+                xCoords[i] = Convert.ToDouble(coordinates[i][2]);
+                //xCoords[i] = double.Parse(coordinates[i][1], CultureInfo.InvariantCulture);
+                //xCoords[i] = double.Parse(coordinates[i][2], CultureInfo.InvariantCulture);
+            }
+            Console.Write("fertig");
         }
     }
 }
