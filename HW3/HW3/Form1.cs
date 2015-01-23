@@ -84,5 +84,10 @@ namespace HW3
             g = pictureBox1.CreateGraphics();
             g.ScaleTransform(.3F, .3F);
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            g.Clear(Color.White);
+        }
     }
 }
