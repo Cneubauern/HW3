@@ -20,6 +20,9 @@ namespace HW3
 
         private double[] xCoords;
         private double[] yCoords;
+        private Point[] coords;
+
+        private bool generateRandom = true;
 
         Graphics g;
 
@@ -44,11 +47,18 @@ namespace HW3
 
             xCoords = new double[coordinates.Count()];
             yCoords = new double[coordinates.Count()];
+            coords = new Point[coordinates.Count()];
 
             for (int i = 0; i < coordinates.Count(); i++)
             {
-                xCoords[i] = Convert.ToDouble(coordinates[i][1]);
-                yCoords[i] = Convert.ToDouble(coordinates[i][2]);
+                //double value = Convert.ToDouble(coordinates[i][1]);
+
+                int xCoord = (int)Convert.ToDouble(coordinates[i][1]);
+                int yCoord = (int)Convert.ToDouble(coordinates[i][2]);
+                coords[i] = new Point(xCoord, yCoord);
+
+                //xCoords[i] = Convert.ToDouble(coordinates[i][1]);
+                //yCoords[i] = Convert.ToDouble(coordinates[i][2]);
                 //xCoords[i] = double.Parse(coordinates[i][1], CultureInfo.InvariantCulture);
                 //xCoords[i] = double.Parse(coordinates[i][2], CultureInfo.InvariantCulture);
             }
@@ -57,26 +67,40 @@ namespace HW3
         private void button1_Click(object sender, EventArgs e)
         {
             Brush brush = new SolidBrush(Color.Red);
-            
-            for (int i = 0; i < xCoords.Count(); i++)
+            Brush fontBrush = new SolidBrush(Color.Black);
+            Font drawFont = new Font("Arial", 20);
+
+
+            int recSize = 20;
+
+            for (int i = 0; i < coords.Length; i++)
             {
-                g.FillRectangle(brush, (float) xCoords[i], (float) yCoords[i], 10, 10);
+                Point stringPoint = new Point(coords[i].X + recSize, coords[i].Y - (int)drawFont.SizeInPoints);
+                g.FillRectangle(brush, (float)coords[i].X - (recSize / 2), (float)coords[i].Y - (recSize / 2), recSize, recSize);
+                g.DrawString((i+1).ToString(), drawFont, fontBrush, stringPoint);
             }              
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Pen pen = new Pen(Color.Red);
-            Point[] nodes = new Point[xCoords.Count()];
+            Pen pen = new Pen(Color.Black);
 
-            for (int i = 0; i < xCoords.Count(); i++)
+            Point[] rndList = new Point[coords.Length];
+
+            if(generateRandom)
             {
-                nodes[i].X = (int)xCoords[i];
-                nodes[i].Y = (int)yCoords[i];
-            }
+                Random rnd = new Random();
 
+                for (int i = 0; i < rndList.Length; ++i)
+                {
+                    int newOrder = rnd.Next(coords.Length);
+                    rndList[i] = coords[newOrder];
+                }
+             
+
+            }
             // points müssen dann noch sortiert weden
-            g.DrawPolygon(pen, nodes);
+            g.DrawPolygon(pen, coords);
         }
 
         private void prepareGraphics()
