@@ -49,18 +49,11 @@ namespace HW3
             yCoords = new double[coordinates.Count()];
             coords = new Point[coordinates.Count()];
 
-            for (int i = 0; i < coordinates.Count(); i++)
+            for (int i = 0; i < coordinates.Count() - 1; i++)
             {
-                //double value = Convert.ToDouble(coordinates[i][1]);
-
                 int xCoord = (int)Convert.ToDouble(coordinates[i][1]);
                 int yCoord = (int)Convert.ToDouble(coordinates[i][2]);
                 coords[i] = new Point(xCoord, yCoord);
-
-                //xCoords[i] = Convert.ToDouble(coordinates[i][1]);
-                //yCoords[i] = Convert.ToDouble(coordinates[i][2]);
-                //xCoords[i] = double.Parse(coordinates[i][1], CultureInfo.InvariantCulture);
-                //xCoords[i] = double.Parse(coordinates[i][2], CultureInfo.InvariantCulture);
             }
         }
 
@@ -84,23 +77,80 @@ namespace HW3
         private void button2_Click(object sender, EventArgs e)
         {
             Pen pen = new Pen(Color.Black);
-
             Point[] rndList = new Point[coords.Length];
 
-            if(generateRandom)
-            {
-                Random rnd = new Random();
+            if (routeInput.Text != "")
+                rndList = getUserRoute(routeInput.Text);
+            else if (randomBox.Checked)
+                rndList = getRandomList(coords.Length);
+            else
+                rndList = coords;
 
-                for (int i = 0; i < rndList.Length; ++i)
-                {
-                    int newOrder = rnd.Next(coords.Length);
-                    rndList[i] = coords[newOrder];
-                }
-             
 
-            }
+            computeDistance(rndList);
+
             // points müssen dann noch sortiert weden
-            g.DrawPolygon(pen, coords);
+            g.DrawPolygon(pen, rndList);
+        }
+
+        private void computeDistance(Point[] list)
+        {
+            double dist = 0;
+
+            for (int i = 0; i < list.Length - 1; ++i )
+            {
+                int dX = list[i].X - list[i + 1].X;
+                int dY = list[i].Y - list[i + 1].Y;
+
+                dist += Math.Sqrt((dX * dX) + (dY * dY));
+            }
+
+            distanceOutputLabel.Text = dist.ToString();
+        }
+
+
+        private Point[] getUserRoute(String text)
+        {
+            String tmpText = text.Replace(", ", ",");
+            String[] valueList = tmpText.Split(',');
+            Point[] list = new Point[valueList.Length];
+
+            for(int i = 0; i < valueList.Length; ++i)
+            {
+                list[i] = coords[Convert.ToInt32(valueList[i]) - 1];
+            }
+
+
+            return list;
+        }
+
+        private Point[] getRandomList(int count)
+        {
+            Random rnd = new Random();
+            int[] numbers = new int[count];
+            Point[] list = new Point[count];
+
+            int foundNumberCount = 0;
+
+            while(foundNumberCount < count)
+            {
+                int rndN = rnd.Next(coords.Length);
+
+                if (Array.IndexOf(numbers, rndN) < 0)
+                {
+                    numbers[foundNumberCount] = rndN;
+                    list[foundNumberCount] = coords[rndN];
+                    ++foundNumberCount;
+
+                    Console.WriteLine("act count: " + foundNumberCount);
+                }
+
+                if (foundNumberCount == count - 1)
+                    break;
+            }
+
+            Console.WriteLine("fertisch");
+            return list;
         }
 
         private void prepareGraphics()
@@ -111,7 +161,23 @@ namespace HW3
 
         private void button3_Click(object sender, EventArgs e)
         {
+            distanceOutputLabel.Text = "0";
             g.Clear(Color.White);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void routeInput_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
