@@ -117,6 +117,7 @@ namespace HW3
 
             for(int i = 0; i < valueList.Length; ++i)
             {
+                if (Convert.ToInt32(valueList[i])<=coords.Length)
                 list[i] = coords[Convert.ToInt32(valueList[i]) - 1];
             }
 
