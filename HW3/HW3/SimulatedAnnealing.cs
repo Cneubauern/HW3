@@ -223,9 +223,9 @@ namespace HW3
         {
             int iteration = -1;
 
-            double temperature = 10000;//form1.getInitialTemperature();
+            double temperature = form1.getInitialTemperature();
             double deltaDistance = 0;
-            double coolingRate = 0.9999;//form1.getCoolingRate();
+            double coolingRate = form1.getCoolingRate();
             double absoluteTemperature = 0.00001;
 
             LoadCities(coords);
