@@ -86,10 +86,26 @@ namespace HW3
             else
                 rndList = coords;
 
+            if (radioButton1.Checked)
+            {
+                SimulatedAnnealing problem = new SimulatedAnnealing();
+                problem.Anneal(coords);
+                rndList = problem.getOrder(coords);
+                distanceOutputLabel.Text = problem.ShortestDistance + "";
+            }
+            else if (radioButton2.Checked)
+            {
+                
+            }
+            else if (radioButton3.Checked)
+            {
 
-            computeDistance(rndList);
-
-            // points müssen dann noch sortiert weden
+            }
+            else if (radioButton4.Checked)
+            {
+                computeDistance(rndList);
+            }
+                // points müssen dann noch sortiert weden
             g.DrawPolygon(pen, rndList);
         }
 
@@ -164,21 +180,6 @@ namespace HW3
         {
             distanceOutputLabel.Text = "0";
             g.Clear(Color.White);
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void routeInput_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
