@@ -81,11 +81,7 @@
             // 
             // button3
             // 
-<<<<<<< HEAD
-            this.button3.Location = new System.Drawing.Point(298, 25);
-=======
             this.button3.Location = new System.Drawing.Point(263, 69);
->>>>>>> master
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 3;
@@ -95,11 +91,7 @@
             // 
             // routeInput
             // 
-<<<<<<< HEAD
-            this.routeInput.Location = new System.Drawing.Point(12, 50);
-=======
             this.routeInput.Location = new System.Drawing.Point(15, 57);
->>>>>>> master
             this.routeInput.Name = "routeInput";
             this.routeInput.Size = new System.Drawing.Size(156, 20);
             this.routeInput.TabIndex = 4;
@@ -141,15 +133,10 @@
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
-<<<<<<< HEAD
-            this.groupBox1.Location = new System.Drawing.Point(449, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(132, 92);
-=======
+
             this.groupBox1.Location = new System.Drawing.Point(301, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(338, 92);
->>>>>>> master
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             // 

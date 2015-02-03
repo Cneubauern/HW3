@@ -11,7 +11,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Globalization;
-using btl.generic;
 
 namespace HW3
 {
@@ -35,11 +34,7 @@ namespace HW3
             InitializeComponent();
             getSentenceIndex();
             prepareGraphics();
-<<<<<<< HEAD
-
-=======
             problem = new SimulatedAnnealing(this);
->>>>>>> master
         }
 
         // store data in a dictionary

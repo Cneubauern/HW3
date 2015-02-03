@@ -120,14 +120,22 @@ namespace HW3
         private double computeDistance(Point[] list)
         {
             double dist = 0;
+            int dX = 0;
+            int dY = 0;
 
             for (int i = 0; i < list.Length - 1; ++i)
             {
-                int dX = list[i].X - list[i + 1].X;
-                int dY = list[i].Y - list[i + 1].Y;
+                 dX = list[i].X - list[i + 1].X;
+                 dY = list[i].Y - list[i + 1].Y;
 
                 dist += Math.Sqrt((dX * dX) + (dY * dY));
             }
+
+             dX= list[list.Length -1].X - list[0].X;
+             dY= list[list.Length - 1].Y - list[0].Y;
+
+            dist += Math.Sqrt((dX * dX) + (dY * dY));
+
 
             return dist;
         }
