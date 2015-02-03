@@ -173,24 +173,44 @@ namespace HW3
             sortEdges();
             Point[] route = new Point[coords.Length];
             Point nullPoint = route[0];
+
             int i = 0;
+            int j = 0;
+
+            route[i] = sortedCoords.ElementAt(j).Key[0];
+            i++;
+            route[i] = sortedCoords.ElementAt(j).Key[1];
+            i++;
+            sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+
             while (i<coords.Count())
             {
-                if ((!route.Contains(sortedCoords.First().Key[0]) || sortedCoords.First().Key[0].Equals(nullPoint)))
+                if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[0]) || i==0)
                 {
-                    if ((!route.Contains(sortedCoords.First().Key[1]) || sortedCoords.First().Key[1].Equals(nullPoint)))
+                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[1])) || (sortedCoords.ElementAt(j).Key[1].Equals(nullPoint)))
                     {
-                        route[i] = sortedCoords.First().Key[0];
+                        route[i] = sortedCoords.ElementAt(j).Key[1];
                         i++;
-                        route[i] = sortedCoords.First().Key[1];
-                        i++;
-                        sortedCoords.Remove(sortedCoords.First().Key);
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                        j = 0;
                     }
                     else
-                        sortedCoords.Remove(sortedCoords.First().Key);
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                }
+                else if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[1]) || i == 0)
+                {
+                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[0])) || (sortedCoords.ElementAt(j).Key[0].Equals(nullPoint)))
+                    {
+                        route[i] = sortedCoords.ElementAt(j).Key[0];
+                        i++;
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                        j = 0;
+                    }
+                    else
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
                 }
                 else
-                    sortedCoords.Remove(sortedCoords.First().Key);
+                    j++;
             }
 
             return route;
