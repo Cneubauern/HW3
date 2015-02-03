@@ -156,7 +156,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(43, 20);
             this.textBox2.TabIndex = 12;
-            this.textBox2.Text = "0.9999";
+            this.textBox2.Text = "0,9999";
             // 
             // label4
             // 
@@ -182,7 +182,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 10;
-            this.textBox1.Text = "10000.0";
+            this.textBox1.Text = "10000,0";
             // 
             // radioButton4
             // 

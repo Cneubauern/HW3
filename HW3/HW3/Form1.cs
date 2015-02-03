@@ -187,14 +187,12 @@ namespace HW3
 
         public double getInitialTemperature()
         {
-            double temperature;
-            Double.TryParse(textBox1.Text, out temperature);
-            return temperature;
+            return Double.Parse(textBox1.Text); ;
         }
 
         public double getCoolingRate()
         {
-            return Double.Parse(textBox2.Text); ;
+            return Double.Parse(textBox2.Text);
         }
-    }
+     }
 }
