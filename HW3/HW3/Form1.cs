@@ -11,6 +11,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Globalization;
+using btl.generic;
 
 namespace HW3
 {
@@ -22,15 +23,18 @@ namespace HW3
         private double[] yCoords;
         private Point[] coords;
 
-        private bool generateRandom = true;
+        private List<int> cityIndeces;
 
         Graphics g;
 
         public Form1()
         {
+            cityIndeces = new List<int>();
+
             InitializeComponent();
             getSentenceIndex();
             prepareGraphics();
+
         }
 
         // store data in a dictionary
@@ -81,8 +85,6 @@ namespace HW3
 
             if (routeInput.Text != "")
                 rndList = getUserRoute(routeInput.Text);
-            else if (randomBox.Checked)
-                rndList = getRandomList(coords.Length);
             else
                 rndList = coords;
 
@@ -99,10 +101,13 @@ namespace HW3
             }
             else if (radioButton3.Checked)
             {
+                GenericAlgorithm ga_PMX = new GenericAlgorithm();
+                ga_PMX.getShortestPath(rndList, cityIndeces.ToArray());
 
             }
             else if (radioButton4.Checked)
             {
+                rndList = getRandomList(rndList);
                 computeDistance(rndList);
             }
                 // points müssen dann noch sortiert weden
@@ -130,44 +135,40 @@ namespace HW3
             String tmpText = text.Replace(", ", ",");
             String[] valueList = tmpText.Split(',');
             Point[] list = new Point[valueList.Length];
+            List<Point> tmpList = new List<Point>();
 
             for(int i = 0; i < valueList.Length; ++i)
             {
-                if (Convert.ToInt32(valueList[i])<=coords.Length)
-                list[i] = coords[Convert.ToInt32(valueList[i]) - 1];
+                if (Convert.ToInt32(valueList[i]) <= coords.Length)
+                {
+                   tmpList.Add(coords[Convert.ToInt32(valueList[i]) - 1]);
+                   cityIndeces.Add(Convert.ToInt32(valueList[i]));
+                }
             }
 
-
-            return list;
+            return tmpList.ToArray();
         }
 
-        private Point[] getRandomList(int count)
+        private Point[] getRandomList(Point[] list)
         {
-            Random rnd = new Random();
-            int[] numbers = new int[count];
-            Point[] list = new Point[count];
+            Random rng = new Random();
+         
+            Point[] sList = (Point[])list.Clone();
 
-            int foundNumberCount = 0;
-
-            while(foundNumberCount < count)
+            int n = list.Length;
+            
+            while (n > 1)
             {
-                int rndN = rnd.Next(coords.Length);
-
-                if (Array.IndexOf(numbers, rndN) < 0)
-                {
-                    numbers[foundNumberCount] = rndN;
-                    list[foundNumberCount] = coords[rndN];
-                    ++foundNumberCount;
-
-                    Console.WriteLine("act count: " + foundNumberCount);
-                }
-
-                if (foundNumberCount == count - 1)
-                    break;
+                n--;
+                int k = rng.Next(n + 1);
+                Point value = sList[k];
+                sList[k] = sList[n];
+                sList[n] = value;
             }
 
             Console.WriteLine("fertisch");
-            return list;
+            return sList;
+
         }
 
         private void prepareGraphics()
