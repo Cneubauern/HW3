@@ -21,6 +21,7 @@ namespace HW3
         private double[] xCoords;
         private double[] yCoords;
         private Point[] coords;
+        SimulatedAnnealing problem;
 
         private bool generateRandom = true;
 
@@ -31,6 +32,7 @@ namespace HW3
             InitializeComponent();
             getSentenceIndex();
             prepareGraphics();
+            problem = new SimulatedAnnealing(this);
         }
 
         // store data in a dictionary
@@ -88,13 +90,14 @@ namespace HW3
 
             if (radioButton1.Checked)
             {
-                SimulatedAnnealing problem = new SimulatedAnnealing();
-                problem.Anneal(coords);
-                rndList = problem.getOrder(coords);
+                problem.Anneal(rndList);
+                rndList = problem.getOrder(rndList);
                 distanceOutputLabel.Text = problem.ShortestDistance + "";
             }
             else if (radioButton2.Checked)
             {
+                rndList = problem.MyAnneal(rndList);
+                computeDistance(rndList);
                 
             }
             else if (radioButton3.Checked)
@@ -180,6 +183,18 @@ namespace HW3
         {
             distanceOutputLabel.Text = "0";
             g.Clear(Color.White);
+        }
+
+        public double getInitialTemperature()
+        {
+            double temperature;
+            Double.TryParse(textBox1.Text, out temperature);
+            return temperature;
+        }
+
+        public double getCoolingRate()
+        {
+            return Double.Parse(textBox2.Text); ;
         }
     }
 }
