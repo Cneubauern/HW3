@@ -44,6 +44,9 @@ namespace HW3
             int cut1 = rng.Next(parent1.Length + 1);
             int cut2 = rng.Next(cut1, parent1.Length);
 
+            cut1 = 8;
+            cut2 = 13;
+
             int range = cut2 - cut1;
 
             int[] mainMappingSection1 = new int[range];
@@ -59,23 +62,41 @@ namespace HW3
             Array.Copy(parent1, offspring1, parent1.Length);
             Array.Copy(parent2, offspring2, parent2.Length);
 
-            Array.Copy(mainMappingSection1, 0, offspring1, cut1, range);
-            Array.Copy(mainMappingSection2, 0, offspring2, cut1, range);
+            Array.Copy(mainMappingSection1, 0, offspring2, cut1, range);
+            Array.Copy(mainMappingSection2, 0, offspring1, cut1, range);
 
             for (int i = 0; i < parent1.Length; ++i)
             {
-                if (i < cut1 && i > cut2 )
+                if (i < cut1 || i > cut2 )
                 {
-                    int numberPos = Array.IndexOf(mainMappingSection1, offspring1[i]);
+                    int numberPos = Array.IndexOf(mainMappingSection2, offspring1[i]);
+                    
                     if (numberPos >= 0)
                     {
+                        offspring1[i] = mainMappingSection1[numberPos];
                     }
                 }
             }
 
+            for (int i = 0; i < parent2.Length; ++i)
+            {
+                if (i < cut1 || i > cut2)
+                {
+                    int numberPos = Array.IndexOf(mainMappingSection1, offspring2[i]);
 
+                    if (numberPos >= 0)
+                    {
+                        offspring2[i] = mainMappingSection2[numberPos];
+                    }
+                }
+            }
 
-                return null;
+            double distParent1 = computeDistance(getPointList(parent1));
+            double distParent2 = computeDistance(getPointList(parent2));
+            double distOffspring1 = computeDistance(getPointList(offspring1));
+            double distOffspring2 = computeDistance(getPointList(offspring2));
+
+            return null;
         }
 
         private int[] getRandomList(int[] iList)
@@ -96,6 +117,31 @@ namespace HW3
                 return list;
         }
 
-    }
+        private double computeDistance(Point[] list)
+        {
+            double dist = 0;
 
+            for (int i = 0; i < list.Length - 1; ++i)
+            {
+                int dX = list[i].X - list[i + 1].X;
+                int dY = list[i].Y - list[i + 1].Y;
+
+                dist += Math.Sqrt((dX * dX) + (dY * dY));
+            }
+
+            return dist;
+        }
+
+        private Point[] getPointList(int[] indexList)
+        {
+            Point[] pointList = new Point[indexList.Length];
+
+            for(int i = 0; i < indexList.Length; ++i)
+            {
+                pointList[i] = cityList[i].Value;
+            }
+
+            return pointList;
+        }
+    }
 }
