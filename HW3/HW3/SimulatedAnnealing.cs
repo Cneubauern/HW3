@@ -16,6 +16,14 @@ namespace HW3
         private double[,] distances;
         private Random random = new Random();
         private double shortestDistance = 0;
+        Dictionary<Point[], double> sortedCoords = new Dictionary<Point[], double>();
+        private Form1 form1;
+
+        public SimulatedAnnealing(Form1 form1)
+        {
+            // TODO: Complete member initialization
+            this.form1 = form1;
+        }
 
         public double ShortestDistance
         {
@@ -73,6 +81,12 @@ namespace HW3
                 for (int j = 0; j < coords.Length; j++)
                 {
                     distances[i, j] = computeDistance(coords[i], coords[j]);
+                    //for sorting later (keine Strecken doppelt und  0x0 1x1 ... vermeiden)
+                    if ((i < j))
+                    {
+                        Point[] edge = { coords[i], coords[j] };
+                        sortedCoords.Add(edge, distances[i, j]);
+                    }
                 }
 
                 //the number of rows in this matrix represent the number of cities
@@ -85,12 +99,12 @@ namespace HW3
                 throw new Exception("No cities to order.");
         }
 
-        private float computeDistance(Point i, Point j){
-            float distance = 0;
+        private double computeDistance(Point i, Point j){
+            double distance = 0;
             int dX = i.X - j.X;
             int dY = i.Y - j.Y;
 
-            distance += (float) Math.Sqrt((dX * dX) + (dY * dY));
+            distance += Math.Sqrt((dX * dX) + (dY * dY));
             return distance;
         }
 
@@ -141,6 +155,67 @@ namespace HW3
             return newOrder;
         }
 
+        private void sortEdges()
+        {
+            Dictionary<Point[],double> sorted = new Dictionary<Point[],double>();
+            //List<KeyValuePair<Point[], double>> sorted = (from kv in sortedCoords orderby kv.Value select kv).ToList();
+            foreach (KeyValuePair<Point[], double> author in sortedCoords.OrderBy(key => key.Value))
+            {
+                sorted.Add(author.Key,author.Value);
+            }
+            sortedCoords.Clear();
+            sortedCoords = sorted;
+        }
+
+        public Point[] MyAnneal(Point[] coords)
+        {
+            LoadCities(coords);
+            sortEdges();
+            Point[] route = new Point[coords.Length];
+            Point nullPoint = route[0];
+
+            int i = 0;
+            int j = 0;
+
+            route[i] = sortedCoords.ElementAt(j).Key[0];
+            i++;
+            route[i] = sortedCoords.ElementAt(j).Key[1];
+            i++;
+            sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+
+            while (i<coords.Count())
+            {
+                if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[0]) || i==0)
+                {
+                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[1])) || (sortedCoords.ElementAt(j).Key[1].Equals(nullPoint)))
+                    {
+                        route[i] = sortedCoords.ElementAt(j).Key[1];
+                        i++;
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                        j = 0;
+                    }
+                    else
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                }
+                else if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[1]) || i == 0)
+                {
+                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[0])) || (sortedCoords.ElementAt(j).Key[0].Equals(nullPoint)))
+                    {
+                        route[i] = sortedCoords.ElementAt(j).Key[0];
+                        i++;
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                        j = 0;
+                    }
+                    else
+                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                }
+                else
+                    j++;
+            }
+
+            return route;
+        }
+
         /// <summary>
         /// Annealing Process
         /// </summary>
@@ -148,9 +223,9 @@ namespace HW3
         {
             int iteration = -1;
 
-            double temperature = 10000.0;
+            double temperature = 10000;//form1.getInitialTemperature();
             double deltaDistance = 0;
-            double coolingRate = 0.9999;
+            double coolingRate = 0.9999;//form1.getCoolingRate();
             double absoluteTemperature = 0.00001;
 
             LoadCities(coords);
