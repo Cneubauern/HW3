@@ -18,6 +18,9 @@ namespace HW3
         private double shortestDistance = 0;
         Dictionary<Point[], double> sortedCoords = new Dictionary<Point[], double>();
         private Form1 form1;
+        int i, j = 0;
+        Point[] route;
+        Point nullPoint = Point(0, 0);
 
         public SimulatedAnnealing(Form1 form1)
         {
@@ -81,17 +84,13 @@ namespace HW3
                 for (int j = 0; j < coords.Length; j++)
                 {
                     distances[i, j] = computeDistance(coords[i], coords[j]);
-                    //for sorting later (keine Strecken doppelt und  0x0 1x1 ... vermeiden)
+                    //for sorting later (no edge twice and no edges from P1 to P1 etc.)
                     if ((i < j))
                     {
                         Point[] edge = { coords[i], coords[j] };
                         sortedCoords.Add(edge, distances[i, j]);
                     }
                 }
-
-                //the number of rows in this matrix represent the number of cities
-                //we are representing each city by an index from 0 to N - 1
-                //where N is the total number of cities
                 currentOrder.Add(i);
             }
 
@@ -167,47 +166,47 @@ namespace HW3
             sortedCoords = sorted;
         }
 
-        public Point[] MyAnneal(Point[] coords)
+        public void addFirstEdge()
         {
-            LoadCities(coords);
-            sortEdges();
-            Point[] route = new Point[coords.Length];
-            Point nullPoint = route[0];
-
-            int i = 0;
-            int j = 0;
-
             route[i] = sortedCoords.ElementAt(j).Key[0];
             i++;
             route[i] = sortedCoords.ElementAt(j).Key[1];
             i++;
             sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+        }
+
+        private void checkPoint(int i)
+        {
+            if ((!route.Contains(sortedCoords.ElementAt(j).Key[i])) || (sortedCoords.ElementAt(j).Key[i].Equals(nullPoint)))
+            {
+                route[i] = sortedCoords.ElementAt(j).Key[i];
+                i++;
+                sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                j = 0;
+            }
+            else
+                sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+        }
+
+        public Point[] MyAnneal(Point[] coords)
+        {
+            route = new Point[coords.Length];
+
+            LoadCities(coords);
+            sortEdges();
+            addFirstEdge();
 
             while (i<coords.Count())
             {
-                if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[0]) || i==0)
+                if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[0]))
                 {
-                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[1])) || (sortedCoords.ElementAt(j).Key[1].Equals(nullPoint)))
-                    {
-                        route[i] = sortedCoords.ElementAt(j).Key[1];
-                        i++;
-                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
-                        j = 0;
-                    }
-                    else
-                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                    // if first point is last on the route: check if second point is not in the list already (add it, if it's not)
+                    checkPoint(1);
                 }
-                else if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[1]) || i == 0)
+                else if (route[i-1].Equals(sortedCoords.ElementAt(j).Key[1]))
                 {
-                    if ((!route.Contains(sortedCoords.ElementAt(j).Key[0])) || (sortedCoords.ElementAt(j).Key[0].Equals(nullPoint)))
-                    {
-                        route[i] = sortedCoords.ElementAt(j).Key[0];
-                        i++;
-                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
-                        j = 0;
-                    }
-                    else
-                        sortedCoords.Remove(sortedCoords.ElementAt(j).Key);
+                    // if second point is last on the route: check if first point is not in the list already (add it, if it's not)
+                    checkPoint(0);
                 }
                 else
                     j++;
