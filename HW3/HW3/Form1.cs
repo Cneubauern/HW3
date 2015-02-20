@@ -102,8 +102,8 @@ namespace HW3
             }
             else if (radioButton3.Checked)
             {
-                GenericAlgorithm ga_PMX = new GenericAlgorithm();
-                ga_PMX.getShortestPath(rndList, cityIndeces.ToArray());
+                GA_PMX ga_PMX = new GA_PMX(coords);
+                ga_PMX.getShortestPath(cityIndeces.ToArray());
 
             }
             else if (radioButton4.Checked)

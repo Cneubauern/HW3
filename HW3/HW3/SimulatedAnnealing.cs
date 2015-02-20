@@ -20,7 +20,7 @@ namespace HW3
         private Form1 form1;
         int i, j = 0;
         Point[] route;
-        Point nullPoint = Point(0, 0);
+        Point nullPoint = new Point(0, 0);
 
         public SimulatedAnnealing(Form1 form1)
         {
