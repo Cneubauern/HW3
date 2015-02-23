@@ -102,7 +102,7 @@ namespace HW3
             }
             else if (radioButton3.Checked)
             {
-                GA_PMX ga_PMX = new GA_PMX(coords);
+                GA_PMX ga_PMX = new GA_PMX(coords,this);
                 ga_PMX.getShortestPath(cityIndeces.ToArray());
 
             }
@@ -192,6 +192,42 @@ namespace HW3
         public double getCoolingRate()
         {
             return Double.Parse(textBox2.Text);
+        }
+        public double getCrossover()
+        {
+            return Double.Parse(crossoverTB.Text);
+        }
+        public int getPopultationSize()
+        {
+            return int.Parse(populationTB.Text);
+        }
+        public int getGenerations()
+        {
+            return int.Parse(generationTB.Text);
+        }
+        public double getMutationRate()
+        {
+            return Double.Parse(mutationTB.Text);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
         }
      }
 }

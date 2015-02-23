@@ -12,30 +12,42 @@ namespace HW3
     class GA_PMX
     {
         static Point[] cityList;
+        private Form1 form1;
 
-        public GA_PMX(Point[] coords)
+        double crossover = 0.7;
+        double mutation;
+        int populationSize;
+        int generations;
+        int genomeSize;
+
+        public GA_PMX(Point[] coords, Form1 form1)
         {
             cityList = coords;
+            this.form1 = form1;
+           
         }
 
-        public double[] getShortestPath(double[] pointList)
+        public double[] getShortestPath(int[] pointList)
         {
             double[] l = null;
-            double crossover = 0.7;
-            double mutation = 0.25;
-            int populationSize = 100;
-            int generations = 1000;
-            int genomSize = pointList.Length;
+            crossover = form1.getCrossover();
+            populationSize = form1.getPopultationSize();
+            generations = form1.getGenerations();
+            mutation = form1.getMutationRate();
+            genomeSize = pointList.Length;
 
-            GA geneticAlgorithm = new GA(crossover, mutation, populationSize, generations, genomSize);
-            geneticAlgorithm.FitnessFunction = new GAFunction(fitnessFunction);
+           
 
-            geneticAlgorithm.Go();
+
+          //  GA geneticAlgorithm = new GA(crossover, mutation, populationSize, generations, genomSize);
+          //  geneticAlgorithm.FitnessFunction = new GAFunction(fitnessFunction);
+
+          //  geneticAlgorithm.Go();
 
             return l;
         }
 
-        public static double fitnessFunction(double[] values)
+        public static double fitnessFunction(int[] values)
         {
             double dist = 0;
             int dX = 0;
@@ -57,5 +69,68 @@ namespace HW3
 
             return dist;
         }
+
+        private Point[] createPMX(int[] parentOne, int[] parentTwo)
+       {
+            Random rng = new Random();
+
+            int[] parent1 = (int[]) parentOne.Clone();
+            int[] parent2 = (int[]) parentTwo.Clone();
+
+            int range = (int)(crossover*genomeSize);
+
+            int cut1 = (genomeSize - range) / 2; 
+            int cut2 = (genomeSize + range) / 2;
+
+
+            int[] mainMappingSection1 = new int[range];
+            int[] mainMappingSection2 = new int[range];
+
+            Array.Copy(parent1, cut1, mainMappingSection1, 0, range);
+            Array.Copy(parent2, cut1, mainMappingSection2, 0, range);
+
+            int[] offspring1 = new int[parent1.Length];
+            int[] offspring2 = new int[parent2.Length];
+
+            Array.Copy(parent1, offspring1, parent1.Length);
+            Array.Copy(parent2, offspring2, parent2.Length);
+
+            Array.Copy(mainMappingSection1, 0, offspring2, cut1, range);
+            Array.Copy(mainMappingSection2, 0, offspring1, cut1, range);
+
+            for (int i = 0; i < parent1.Length; ++i)
+            {
+                if (i < cut1 || i > cut2 )
+                {
+                    int numberPos = Array.IndexOf(mainMappingSection2, offspring1[i]);
+                    
+                    if (numberPos >= 0)
+                    {
+                        offspring1[i] = mainMappingSection1[numberPos];
+                    }
+                }
+            }
+
+            for (int i = 0; i < parent2.Length; ++i)
+            {
+                    if (i < cut1 || i > cut2)
+                {
+                    int numberPos = Array.IndexOf(mainMappingSection1, offspring2[i]);
+
+                    if (numberPos >= 0)
+                    {
+                        offspring2[i] = mainMappingSection2[numberPos];
+                    }
+                }
+            }
+
+            double distParent1 = fitnessFunction(parent1);
+            double distParent2 = fitnessFunction(parent2);
+            double distOffspring1 = fitnessFunction(offspring1);
+            double distOffspring2 = fitnessFunction(offspring2);
+
+            return null;
+        }
+        
     }
 }
