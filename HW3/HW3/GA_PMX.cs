@@ -8,43 +8,185 @@ using btl.generic;
 
 namespace HW3
 {
-
     class GA_PMX
     {
-        static Point[] cityList;
         private Form1 form1;
+        private static Point[] cityList;
+        private int[] shortestPath;
+
+        private List<KeyValuePair<int[], double>> elitism;
+        private List<KeyValuePair<int[], double>> worstPath;
+        private List<List<KeyValuePair<int[], double>>> generationsList;
+        private List<KeyValuePair<int[], double>> actPopulation;
 
         double crossover = 0.7;
         double mutation;
         int populationSize;
         int generations;
         int genomeSize;
+        bool withElitism;
 
         public GA_PMX(Point[] coords, Form1 form1)
         {
             cityList = coords;
             this.form1 = form1;
-           
+
+            // bester Pfad je Generation
+            elitism = new List<KeyValuePair<int[], double>>();
+            //schlechtester Pfad je Generation
+            worstPath = new List<KeyValuePair<int[], double>>();
+
+            // Liste mit jeder Generation
+            generationsList = new List<List<KeyValuePair<int[], double>>>();
+            // Liste die die aktuelle Population enthaelt
+            actPopulation = new List<KeyValuePair<int[], double>>();
         }
 
         public double[] getShortestPath(int[] pointList)
         {
-            double[] l = null;
+            shortestPath = new int[pointList.Length];
             crossover = form1.getCrossover();
             populationSize = form1.getPopultationSize();
             generations = form1.getGenerations();
             mutation = form1.getMutationRate();
             genomeSize = pointList.Length;
+            withElitism = form1.getElitism();
+            
+            runGA(pointList);
 
-           
+            return null;
+        }
 
+        private void runGA(int[] pointList)
+        {
+            Random rng = new Random();
 
-          //  GA geneticAlgorithm = new GA(crossover, mutation, populationSize, generations, genomSize);
-          //  geneticAlgorithm.FitnessFunction = new GAFunction(fitnessFunction);
+            // erster Schritt (Init Population): bestimmte Anzahl an zufaelligen Routen erzeugen und Laengen berechnen
+            actPopulation = createRandomPopulation(pointList);
+            generationsList.Add(actPopulation);
 
-          //  geneticAlgorithm.Go();
+            // je nach Anzahl an generations werden die nächsten Schritte wiederholt
+            for (int generation = 1; generation < generations; ++generation )
+            {
+                actPopulation = new List<KeyValuePair<int[],double>>();
+                KeyValuePair<int[], double> actBestPath = new KeyValuePair<int[],double> (null, Double.MaxValue);
+                KeyValuePair<int[], double> actWorstPath = new KeyValuePair<int[],double>(null, 0);
 
-            return l;
+                // vorherige Generation
+                List<KeyValuePair<int[], double>> prvsGeneration = generationsList[generation - 1];
+
+                int populationStartPos = 0;
+
+                // falls elitism auf true gesetzt ist, wird die Beste Route aus der vorherigen Generation übernommen
+                if (withElitism)
+                { 
+                    actPopulation.Add(elitism[generation - 1]);
+                    actWorstPath = actPopulation[0];
+                    populationStartPos = 1;
+                }
+
+                // zweiter Schritt (Breed): jeweils zwei Routen auswählen und aus denen zwei neue Routen bestimmen. Das so oft wiederholen, bis die Populationsgröße erreicht wird.
+                for (int i = populationStartPos; i < populationSize; i += 2)
+                {
+                    int[] child1;
+                    int[] child2;
+
+                    int[] rndParent1 = prvsGeneration[rng.Next(populationSize)].Key;
+                    int[] rndParent2 = prvsGeneration[rng.Next(populationSize)].Key;
+
+                    if (rndParent1 == null || rndParent2 == null)
+                    {
+                        Console.WriteLine("");
+                    }
+
+                    createPMX(rndParent1, rndParent2, out child1, out child2);
+
+                    double child1Fitness = fitnessFunction(child1);
+                    double child2Fitness = fitnessFunction(child2);
+
+                    KeyValuePair<int[], double> child1Pair = new KeyValuePair<int[], double>(child1, child1Fitness);
+                    KeyValuePair<int[], double> child2Pair = new KeyValuePair<int[], double>(child2, child2Fitness);
+
+                    actPopulation.Add(child1Pair);
+                   
+                    if(actPopulation.Count < populationSize)
+                        actPopulation.Add(child2Pair);
+
+                    checkRouteValue(child1Pair, actBestPath, actWorstPath, out actBestPath, out actWorstPath);
+                    checkRouteValue(child2Pair, actBestPath, actWorstPath, out actBestPath, out actWorstPath);
+                }
+
+                generationsList.Add(actPopulation);
+                elitism.Add(actBestPath);
+                worstPath.Add(actWorstPath);
+
+                Console.WriteLine("Generation " + generation + " finished");
+            }
+            
+            Console.WriteLine("");
+        }
+
+        private void checkRouteValue(KeyValuePair<int[], double> route, KeyValuePair<int[], double> bestPathIn, KeyValuePair<int[], double> worstPathIn, out KeyValuePair<int[], double> bestPath, out KeyValuePair<int[], double> worstPath)
+        {
+            KeyValuePair<int[], double> newBestPath = bestPathIn;
+            KeyValuePair<int[], double> newWorstPath = worstPathIn;
+
+            if (route.Value < newBestPath.Value || newBestPath.Key == null)
+                newBestPath = new KeyValuePair<int[],double>(route.Key, route.Value);
+
+            if (route.Value > newWorstPath.Value)
+                newWorstPath = new KeyValuePair<int[], double>(route.Key, route.Value);
+
+            bestPath = newBestPath;
+            worstPath = newWorstPath;
+        }
+
+        private List<KeyValuePair<int[], double>> createRandomPopulation(int[] pointList)
+        {
+            Random rng = new Random();
+            List<KeyValuePair<int[], double>> rndPopulation = new List<KeyValuePair<int[], double>>();
+
+            // die vom Benutzer gewaehlte Route wird auch uebernommen
+            double sourceFitness = fitnessFunction(pointList);
+            rndPopulation.Add(new KeyValuePair<int[], double>(pointList, sourceFitness));
+
+            KeyValuePair<int[], double> actWorstPath = new KeyValuePair<int[], double>(pointList, sourceFitness);
+            KeyValuePair<int[], double> actBestPath = new KeyValuePair<int[], double>(pointList, sourceFitness);
+
+            // erzeugt je nach Populationsgroeße entsprechend viele zufällige Routen
+            for (int i = 0; i < populationSize - 1; ++i)
+            {
+                int n = pointList.Length;
+                int[] actGene = new int[n];
+                Array.Copy(pointList, actGene, n);
+
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+                    int value = actGene[k];
+                    actGene[k] = actGene[n];
+                    actGene[n] = value;
+                }
+
+                //printList(actGene);
+
+                // berechnet die Fitness (laenge der Route) und fuegt die Route sowie deren Fitness in die entsprechenden Listen ein.
+                double geneFitness = fitnessFunction(actGene);
+                rndPopulation.Add(new KeyValuePair<int[], double>(actGene, geneFitness));
+
+                // überprüft ob es der zurzeit beste oder schlechteste Pfad ist.
+                if (geneFitness < actBestPath.Value)
+                    actBestPath = new KeyValuePair<int[], double>(actGene, geneFitness);
+
+                if(geneFitness > actWorstPath.Value)
+                    actWorstPath = new KeyValuePair<int[], double>(actGene, geneFitness);
+            }
+
+            worstPath.Add(actWorstPath);
+            elitism.Add(actBestPath);
+
+            return rndPopulation;
         }
 
         public static double fitnessFunction(int[] values)
@@ -70,8 +212,8 @@ namespace HW3
             return dist;
         }
 
-        private Point[] createPMX(int[] parentOne, int[] parentTwo)
-       {
+        private void createPMX(int[] parentOne, int[] parentTwo, out int[] child1, out int[] child2)
+        {
             Random rng = new Random();
 
             int[] parent1 = (int[]) parentOne.Clone();
@@ -124,12 +266,20 @@ namespace HW3
                 }
             }
 
-            double distParent1 = fitnessFunction(parent1);
-            double distParent2 = fitnessFunction(parent2);
-            double distOffspring1 = fitnessFunction(offspring1);
-            double distOffspring2 = fitnessFunction(offspring2);
+            child1 = offspring1;
+            child2 = offspring2;
+        }
 
-            return null;
+        private void printList(int[] list)
+        {
+            String listS = "";
+
+            for(int i = 0; i < list.Length; ++i)
+            {
+                listS += list[i] + ", ";
+            }
+
+            Console.WriteLine(listS);
         }
         
     }

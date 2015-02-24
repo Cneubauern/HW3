@@ -210,6 +210,11 @@ namespace HW3
             return Double.Parse(mutationTB.Text);
         }
 
+        public bool getElitism()
+        {
+            return elitism.Checked;
+        }
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
