@@ -88,6 +88,11 @@ namespace HW3
             else
                 rndList = coords;
 
+            Stopwatch timer = new Stopwatch();
+
+            timer.Reset();
+            timer.Start();
+
             if (radioButton1.Checked)
             {
                 problem.Anneal(rndList);
@@ -98,20 +103,30 @@ namespace HW3
             {
                 rndList = problem.MyAnneal(rndList);
                 computeDistance(rndList);
-                
             }
             else if (radioButton3.Checked)
             {
-                GA_PMX ga_PMX = new GA_PMX(coords,this);
-                ga_PMX.getShortestPath(cityIndeces.ToArray());
+                if(routeInput.Text == "")
+                {
+                    cityIndeces = new List<int>();
+                    for (int i = 0; i < coords.Length; ++i)
+                        cityIndeces.Add(i);
+                }
 
+                GA_PMX ga_PMX = new GA_PMX(coords,this);
+                rndList = ga_PMX.getShortestPath(cityIndeces.ToArray());
+                computeDistance(rndList);
             }
             else if (radioButton4.Checked)
             {
                 rndList = getRandomList(rndList);
                 computeDistance(rndList);
             }
-                // points müssen dann noch sortiert weden
+
+            timer.Stop();
+
+            timeOutput.Text = timer.ElapsedMilliseconds.ToString();
+            // points müssen dann noch sortiert weden
             g.DrawPolygon(pen, rndList);
         }
 
@@ -143,7 +158,7 @@ namespace HW3
                 if (Convert.ToInt32(valueList[i]) <= coords.Length)
                 {
                    tmpList.Add(coords[Convert.ToInt32(valueList[i]) - 1]);
-                   cityIndeces.Add(Convert.ToInt32(valueList[i]));
+                   cityIndeces.Add(Convert.ToInt32(valueList[i]) - 1);
                 }
             }
 
@@ -167,7 +182,6 @@ namespace HW3
                 sList[n] = value;
             }
 
-            Console.WriteLine("fertisch");
             return sList;
 
         }
@@ -181,6 +195,7 @@ namespace HW3
         private void button3_Click(object sender, EventArgs e)
         {
             distanceOutputLabel.Text = "0";
+            timeOutput.Text = "0";
             g.Clear(Color.White);
         }
 
@@ -210,11 +225,6 @@ namespace HW3
             return Double.Parse(mutationTB.Text);
         }
 
-        public bool getElitism()
-        {
-            return elitism.Checked;
-        }
-
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
@@ -231,6 +241,11 @@ namespace HW3
         }
 
         private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }

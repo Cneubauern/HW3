@@ -24,7 +24,6 @@ namespace HW3
         int populationSize;
         int generations;
         int genomeSize;
-        bool withElitism;
 
         public GA_PMX(Point[] coords, Form1 form1)
         {
@@ -42,7 +41,7 @@ namespace HW3
             actPopulation = new List<KeyValuePair<int[], double>>();
         }
 
-        public double[] getShortestPath(int[] pointList)
+        public Point[] getShortestPath(int[] pointList)
         {
             shortestPath = new int[pointList.Length];
             crossover = form1.getCrossover();
@@ -50,11 +49,21 @@ namespace HW3
             generations = form1.getGenerations();
             mutation = form1.getMutationRate();
             genomeSize = pointList.Length;
-            withElitism = form1.getElitism();
             
             runGA(pointList);
 
-            return null;
+            List<KeyValuePair<int[], double>> sortedElitism = new List<KeyValuePair<int[], double>>(elitism);
+            sortedElitism.Sort(CompareValues);
+
+            int[] shortestList = sortedElitism[0].Key;
+            Point[] pList = new Point[shortestList.Length];
+
+            for (int i = 0; i < shortestList.Length; ++i)
+            {
+                pList[i] = cityList[shortestList[i]];
+            }
+
+            return pList;
         }
 
         private void runGA(int[] pointList)
@@ -78,13 +87,10 @@ namespace HW3
                 int populationStartPos = 0;
 
                 // falls elitism auf true gesetzt ist, wird die Beste Route aus der vorherigen Generation übernommen
-                if (withElitism)
-                { 
-                    actPopulation.Add(elitism[generation - 1]);
-                    actWorstPath = actPopulation[0];
-                    populationStartPos = 1;
-                }
-
+                actPopulation.Add(elitism[generation - 1]);
+                actWorstPath = actPopulation[0];
+                populationStartPos = 1;
+                
                 // zweiter Schritt (Breed): jeweils zwei Routen auswählen und aus denen zwei neue Routen bestimmen. Das so oft wiederholen, bis die Populationsgröße erreicht wird.
                 for (int i = populationStartPos; i < populationSize; i += 2)
                 {
@@ -93,11 +99,6 @@ namespace HW3
 
                     int[] rndParent1 = prvsGeneration[rng.Next(populationSize)].Key;
                     int[] rndParent2 = prvsGeneration[rng.Next(populationSize)].Key;
-
-                    if (rndParent1 == null || rndParent2 == null)
-                    {
-                        Console.WriteLine("");
-                    }
 
                     createPMX(rndParent1, rndParent2, out child1, out child2);
 
@@ -108,12 +109,13 @@ namespace HW3
                     KeyValuePair<int[], double> child2Pair = new KeyValuePair<int[], double>(child2, child2Fitness);
 
                     actPopulation.Add(child1Pair);
-                   
-                    if(actPopulation.Count < populationSize)
-                        actPopulation.Add(child2Pair);
-
                     checkRouteValue(child1Pair, actBestPath, actWorstPath, out actBestPath, out actWorstPath);
-                    checkRouteValue(child2Pair, actBestPath, actWorstPath, out actBestPath, out actWorstPath);
+
+                    if (actPopulation.Count < populationSize)
+                    {
+                        actPopulation.Add(child2Pair);
+                        checkRouteValue(child2Pair, actBestPath, actWorstPath, out actBestPath, out actWorstPath);
+                    }
                 }
 
                 generationsList.Add(actPopulation);
@@ -122,7 +124,7 @@ namespace HW3
 
                 Console.WriteLine("Generation " + generation + " finished");
             }
-            
+
             Console.WriteLine("");
         }
 
@@ -169,8 +171,6 @@ namespace HW3
                     actGene[n] = value;
                 }
 
-                //printList(actGene);
-
                 // berechnet die Fitness (laenge der Route) und fuegt die Route sowie deren Fitness in die entsprechenden Listen ein.
                 double geneFitness = fitnessFunction(actGene);
                 rndPopulation.Add(new KeyValuePair<int[], double>(actGene, geneFitness));
@@ -195,10 +195,10 @@ namespace HW3
             int dX = 0;
             int dY = 0;
 
-            for (int i = 0; i < values.Length - 1; ++i)
+            for (int i = 1; i < values.Length - 1; ++i)
             {
-                dX = cityList[(int)values[i]].X - cityList[(int)(values[i + 1])].X;
-                dY = cityList[(int)values[i]].Y - cityList[(int)(values[i + 1])].Y;
+                dX = cityList[(int)values[i - 1]].X - cityList[(int)(values[i])].X;
+                dY = cityList[(int)values[i - 1]].Y - cityList[(int)(values[i])].Y;
 
                 dist += Math.Sqrt((dX * dX) + (dY * dY));
             }
@@ -207,7 +207,6 @@ namespace HW3
             dY = cityList[(int)values[values.Length - 1]].Y - cityList[(int)values[0]].Y;
 
             dist += Math.Sqrt((dX * dX) + (dY * dY));
-
 
             return dist;
         }
@@ -242,27 +241,63 @@ namespace HW3
 
             for (int i = 0; i < parent1.Length; ++i)
             {
-                if (i < cut1 || i > cut2 )
+                if (i < cut1 || i >= cut2 )
                 {
-                    int numberPos = Array.IndexOf(mainMappingSection2, offspring1[i]);
+                    //int numberPos = Array.IndexOf(mainMappingSection2, offspring1[i]);
                     
-                    if (numberPos >= 0)
+                    //if (numberPos >= 0)
+                    //{
+                    //    int mappingValue = mainMappingSection1[numberPos];
+                    //    int numberPos2 = Array.IndexOf(mainMappingSection2, mappingValue);
+
+                    //    if (numberPos2 >= 0)
+                    //        offspring1[i] = mainMappingSection1[numberPos2];
+                    //    else
+                    //        offspring1[i] = mappingValue;
+                    //}
+
+                    int mappingValue = offspring1[i];
+                    int numberPos = Array.IndexOf(mainMappingSection2, mappingValue);
+                    
+                    while(numberPos >= 0)
                     {
-                        offspring1[i] = mainMappingSection1[numberPos];
+                        mappingValue = mainMappingSection1[numberPos];
+                        numberPos = Array.IndexOf(mainMappingSection2, mappingValue);
                     }
+
+                    offspring1[i] = mappingValue;
                 }
             }
 
             for (int i = 0; i < parent2.Length; ++i)
             {
-                    if (i < cut1 || i > cut2)
+                if (i < cut1 || i >= cut2)
                 {
-                    int numberPos = Array.IndexOf(mainMappingSection1, offspring2[i]);
+                    /*int numberPos = Array.IndexOf(mainMappingSection1, offspring2[i]);
 
                     if (numberPos >= 0)
                     {
-                        offspring2[i] = mainMappingSection2[numberPos];
+                       // offspring2[i] = mainMappingSection2[numberPos];
+
+                        int mappingValue = mainMappingSection2[numberPos];
+                        int numberPos2 = Array.IndexOf(mainMappingSection1, mappingValue);
+
+                        if (numberPos2 >= 0)
+                            offspring2[i] = mainMappingSection2[numberPos2];
+                        else
+                            offspring2[i] = mappingValue;
+                    }*/
+
+                    int mappingValue = offspring2[i];
+                    int numberPos = Array.IndexOf(mainMappingSection1, offspring2[i]);
+
+                    while (numberPos >= 0)
+                    {
+                        mappingValue = mainMappingSection2[numberPos];
+                        numberPos = Array.IndexOf(mainMappingSection1, mappingValue);
                     }
+
+                    offspring2[i] = mappingValue;
                 }
             }
 
@@ -270,17 +305,9 @@ namespace HW3
             child2 = offspring2;
         }
 
-        private void printList(int[] list)
+        public static int CompareValues(KeyValuePair<int[], double> a, KeyValuePair<int[], double> b)
         {
-            String listS = "";
-
-            for(int i = 0; i < list.Length; ++i)
-            {
-                listS += list[i] + ", ";
-            }
-
-            Console.WriteLine(listS);
+            return a.Value.CompareTo(b.Value);
         }
-        
     }
 }

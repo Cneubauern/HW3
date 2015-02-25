@@ -53,7 +53,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.elitism = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.timeOutput = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -118,7 +119,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(188, 34);
+            this.label2.Location = new System.Drawing.Point(200, 11);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(52, 13);
             this.label2.TabIndex = 7;
@@ -127,7 +128,7 @@
             // distanceOutputLabel
             // 
             this.distanceOutputLabel.AutoSize = true;
-            this.distanceOutputLabel.Location = new System.Drawing.Point(200, 53);
+            this.distanceOutputLabel.Location = new System.Drawing.Point(264, 9);
             this.distanceOutputLabel.Name = "distanceOutputLabel";
             this.distanceOutputLabel.Size = new System.Drawing.Size(0, 13);
             this.distanceOutputLabel.TabIndex = 8;
@@ -143,15 +144,15 @@
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(301, 3);
+            this.groupBox1.Location = new System.Drawing.Point(405, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(338, 92);
+            this.groupBox1.Size = new System.Drawing.Size(373, 96);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(289, 4);
+            this.textBox2.Location = new System.Drawing.Point(323, 13);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(43, 20);
             this.textBox2.TabIndex = 12;
@@ -160,7 +161,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(217, 7);
+            this.label4.Location = new System.Drawing.Point(251, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 13);
             this.label4.TabIndex = 11;
@@ -169,7 +170,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(70, 7);
+            this.label3.Location = new System.Drawing.Point(92, 16);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(97, 13);
             this.label3.TabIndex = 10;
@@ -177,7 +178,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(168, 3);
+            this.textBox1.Location = new System.Drawing.Point(190, 12);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 10;
@@ -227,7 +228,7 @@
             // 
             // mutationTB
             // 
-            this.mutationTB.Location = new System.Drawing.Point(489, 142);
+            this.mutationTB.Location = new System.Drawing.Point(691, 127);
             this.mutationTB.Name = "mutationTB";
             this.mutationTB.Size = new System.Drawing.Size(52, 20);
             this.mutationTB.TabIndex = 13;
@@ -235,7 +236,7 @@
             // 
             // populationTB
             // 
-            this.populationTB.Location = new System.Drawing.Point(489, 164);
+            this.populationTB.Location = new System.Drawing.Point(691, 149);
             this.populationTB.Name = "populationTB";
             this.populationTB.Size = new System.Drawing.Size(52, 20);
             this.populationTB.TabIndex = 14;
@@ -244,7 +245,7 @@
             // 
             // generationTB
             // 
-            this.generationTB.Location = new System.Drawing.Point(489, 187);
+            this.generationTB.Location = new System.Drawing.Point(691, 172);
             this.generationTB.Name = "generationTB";
             this.generationTB.Size = new System.Drawing.Size(52, 20);
             this.generationTB.TabIndex = 15;
@@ -252,7 +253,7 @@
             // 
             // crossoverTB
             // 
-            this.crossoverTB.Location = new System.Drawing.Point(489, 120);
+            this.crossoverTB.Location = new System.Drawing.Point(691, 105);
             this.crossoverTB.Name = "crossoverTB";
             this.crossoverTB.Size = new System.Drawing.Size(52, 20);
             this.crossoverTB.TabIndex = 16;
@@ -261,7 +262,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(385, 120);
+            this.label5.Location = new System.Drawing.Point(587, 105);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 17;
@@ -271,7 +272,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(385, 145);
+            this.label6.Location = new System.Drawing.Point(587, 130);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 18;
@@ -280,7 +281,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(385, 166);
+            this.label7.Location = new System.Drawing.Point(587, 151);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(77, 13);
             this.label7.TabIndex = 19;
@@ -289,31 +290,37 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(385, 190);
+            this.label8.Location = new System.Drawing.Point(587, 175);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 13);
             this.label8.TabIndex = 20;
             this.label8.Text = "generations";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
-            // elitism
+            // label9
             // 
-            this.elitism.AutoSize = true;
-            this.elitism.Checked = true;
-            this.elitism.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.elitism.Location = new System.Drawing.Point(487, 213);
-            this.elitism.Name = "elitism";
-            this.elitism.Size = new System.Drawing.Size(54, 17);
-            this.elitism.TabIndex = 21;
-            this.elitism.Text = "elitism";
-            this.elitism.UseVisualStyleBackColor = true;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(198, 37);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(60, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Time in ms:";
+            // 
+            // timeOutput
+            // 
+            this.timeOutput.AutoSize = true;
+            this.timeOutput.Location = new System.Drawing.Point(264, 37);
+            this.timeOutput.Name = "timeOutput";
+            this.timeOutput.Size = new System.Drawing.Size(0, 13);
+            this.timeOutput.TabIndex = 22;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 548);
-            this.Controls.Add(this.elitism);
+            this.ClientSize = new System.Drawing.Size(917, 548);
+            this.Controls.Add(this.timeOutput);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -332,6 +339,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -367,7 +375,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.CheckBox elitism;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label timeOutput;
     }
 }
 
